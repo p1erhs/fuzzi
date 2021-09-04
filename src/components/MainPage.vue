@@ -77,6 +77,11 @@
           <input type="number" step="any" id="example-value" v-model="input.example">
           <span class="contain-level" v-for="fuzzyArea in input.fuzzyAreas" :key="fuzzyArea.name">{{fuzzyArea.type.value(fuzzyArea.type.ranges, input.example)}}</span>
         </div>
+        <!-- <div v-for="output in variables.outputs" class="variable-data" :key="output.name">
+          <label for="example-value">{{output.name}}</label>
+          <input type="number" step="any" id="example-value" v-model="output.example">
+          <span class="contain-level" v-for="fuzzyArea in output.fuzzyAreas" :key="fuzzyArea.name">{{fuzzyArea.type.value(fuzzyArea.type.ranges, output.example)}}</span>
+        </div> -->
       </form>
     </section>
 
@@ -118,6 +123,8 @@
   </div>
 </template>
 
+
+
 <script>
 
 import config from '../config/MainPageConfig';
@@ -129,11 +136,100 @@ export default {
   },
   methods: {
     getResult() {
-      let res = { result: 0 };
-      this.rules.data.forEach((element) => {
-        if (element.result > res.result) res = element;
-      });
-      console.log(res.fuzzyAreas.output.type.ranges[0]);
+      /* eslint max-len: ["error", { "code": 280 }] */
+      // I must change this!!!
+      // let res = { result: 0 };
+      // this.rules.data.forEach((element) => {
+      //   console.log(element);
+      //   if (element.result > res.result) res = element;
+      // });
+      // console.log(res.fuzzyAreas.output.type.ranges[0]);
+      // const data = [];
+      // this.rules.data.forEach((element) => {
+      //   // example = element.fuzzyAreas.output.type.ranges[0];
+      //   let example = parseInt(element.fuzzyAreas.output.type.ranges[0], 10);
+      //   while (element.result !== element.fuzzyAreas.output.type.value(element.fuzzyAreas.output.type.ranges, example)) {
+      //     example += 0.1;
+      //     console.log(example);
+      //   }
+      //   data.push(example);
+      // });
+      // console.log(data);
+      console.log(this.defuzzification());
+      // return data;
+    },
+    defuzzification() {
+      const stepN = 1000;
+      const starter = this.variables.outputs[0].start;
+      let ender = this.variables.outputs[0].end;
+      ender = parseInt(ender, 10);
+      const step = (ender - starter) / (stepN - 1);
+      // let uppersum = 0;
+      // let lowersum = 0;
+      let keep = 0;
+      const values = [];
+      const weightedvalues = [];
+      // for (let u = starter; u < ender; u = step + u) {
+      //   const compvalues = [];
+      //   for (let i = 0; i < this.rules.data.length; i += 1) {
+      //     for (let j = 0; j < i; j += 1) {
+      //       const value = this.rules.data[i].fuzzyAreas.output.type.value(this.rules.data[i].fuzzyAreas.output.type.ranges, u);
+      //       if (value > 0) {
+      //         if (value < this.rules.data[j].result) {
+      //           compvalues.push(value);
+      //         } else {
+      //           compvalues.push(this.rules.data[j].result);
+      //         }
+      //       }
+      //     }
+      //   }
+      //   if (compvalues.length > 0) {
+      //     keep = Math.max(...compvalues);
+      //     values.push(keep);
+      //     weightedvalues.push(keep * u);
+      //   }
+      // }
+      // console.log(keep);
+      // console.log(values);
+      // console.log(weightedvalues);
+      for (let i = 0; i < this.rules.data.length; i += 1) {
+        const compvalues = [];
+        for (let j = starter; j < ender; j = step + j) {
+          const value = this.rules.data[i].fuzzyAreas.output.type.value(this.rules.data[i].fuzzyAreas.output.type.ranges, i);
+          if (value > 0) {
+            if (value < this.rules.data[i].result) {
+              compvalues.push(value);
+            } else {
+              compvalues.push(this.rules.data[i].result);
+            }
+          }
+        }
+        if (compvalues.length > 0) {
+          keep = Math.max(...compvalues);
+          values.push(keep);
+          weightedvalues.push(keep * i);
+        }
+      }
+      const sumwv = weightedvalues.reduce((a, b) => a + b, 0);
+      const sumv = values.reduce((a, b) => a + b, 0);
+      console.log(sumwv);
+      console.log(sumv);
+      return sumwv / sumv;
+      // for (let i = 0; i < this.rules.data.length; i += 1) {
+      //   for (let j = starter; j < ender; j = step + j) {
+      //     const value = this.rules.data[i].fuzzyAreas.output.type.value(this.rules.data[i].fuzzyAreas.output.type.ranges, i) - (this.rules.data[i].result + 1);
+      //     if (value > 0) {
+      //       if (value < this.rules.data[i].result) {
+      //         uppersum += value * j;
+      //         lowersum += value;
+      //       } else {
+      //         uppersum += this.rules.data[i].result * j;
+      //         lowersum += this.rules.data[i].result;
+      //       }
+      //     }
+      //   }
+      // }
+      // return (uppersum / lowersum);
     },
     toggleNorm() {
       let newNorm;
@@ -155,6 +251,19 @@ export default {
       const result = data.reduce((next, prev) => compareFunction(next, prev));
       return result;
     },
+    // getImplication(rule) {
+    //   let example = 0;
+    //   const data = rule.result;
+    //   const out = rule.fuzzyAreas.output;
+    //   console.log(out.type.value(out.type.ranges, example));
+    //   example += 1;
+    //   console.log(data);
+    //   while (out.type.value(out.type.ranges, example) !== result) {
+    //     example += 1;
+    //   }
+    //   console.log(example);
+    //   return example;
+    // },
     createRule() {
       this.rules = {
         ...this.rules,
@@ -165,8 +274,11 @@ export default {
             fuzzyAreas: {
               inputs: [...this.rules.newRule.fuzzyAreas.inputs],
               output: { ...this.rules.newRule.fuzzyAreas.output },
+
             },
             result: this.checkValue(this.rules.newRule),
+            // tslint:disable-next-line:max-line-length
+            // implication: this.getImplication(this.rules.newRule),
           },
         ],
       };
@@ -188,6 +300,7 @@ export default {
         ];
       } else {
         this.variables.outputs = [
+          ...this.variables.outputs,
           { ...this.variables.newVariable, fuzzyAreas: [] },
         ];
       }

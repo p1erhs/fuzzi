@@ -1,21 +1,21 @@
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
-import Vue from 'vue';
-import App from './App';
-import router from './router';
-import BarChart from './components/BarChart';
-import ProjectName from './components/ProjectName';
-import VariableType from './components/VariableType';
+import Vue from "vue";
+import App from "./App";
+import router from "./router";
+import BarChart from "./components/BarChart";
+import ProjectName from "./components/ProjectName";
+import VariableType from "./components/VariableType";
 
 Vue.config.productionTip = false;
-Vue.component('bar-chart', BarChart);
-Vue.component('project-name', ProjectName);
-Vue.component('variable-type', VariableType);
+Vue.component("bar-chart", BarChart);
+Vue.component("project-name", ProjectName);
+Vue.component("variable-type", VariableType);
 
 /* eslint-disable no-new */
 new Vue({
-  el: '#app',
+  el: "#app",
   router,
-  template: '<App/>',
+  template: "<App/>",
   components: { App },
 });

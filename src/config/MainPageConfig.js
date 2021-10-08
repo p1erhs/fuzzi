@@ -11,6 +11,7 @@ const variables = {
   },
   inputs: [],
   outputs: [],
+  crisp: 'undefined',
 };
 
 const fuzzyAreas = {
@@ -25,6 +26,15 @@ const fuzzyAreas = {
       value: (rangesParam, valueParam) => {
         const ranges = rangesParam.map(range => parseInt(range, 10));
         const value = parseInt(valueParam, 10);
+        // if (value < ranges[1]) {
+        //   if (ranges[0] !== ranges[1]) {
+        //     return (value - ranges[0]) * (1 / (ranges[1] - ranges[0]));
+        //   }
+        //   return 1;
+        // } else if (ranges[1] !== ranges[2]) {
+        //   return 1 + ((value - ranges[1]) * (-1 / (ranges[2] - ranges[1])));
+        // }
+        // return 0;
         if (value < ranges[0] || value > ranges[2]) return 0;
         if (value < ranges[1]) return (value - ranges[0]) / (ranges[1] - ranges[0]);
         return (ranges[2] - value) / (ranges[2] - ranges[1]);
@@ -56,6 +66,11 @@ const rules = {
         value: 0,
       },
     },
+    variables: {
+      output: {
+        value: 0,
+      },
+    },
   },
 };
 
@@ -70,6 +85,92 @@ const exampleVariables = {
     fuzzyAreas: [],
     example: 0,
   },
+  // inputs: [
+  //   {
+  //     name: 'size',
+  //     start: 0,
+  //     end: 10,
+  //     fuzzyAreasCount: 2,
+  //     example: 2,
+  //     fuzzyAreas: [
+  //       {
+  //         name: 'small',
+  //         type: {
+  //           name: 'Triangle',
+  //           ranges: [0, 0, 10],
+  //           value: fuzzyAreas.types.triangle.value,
+  //         },
+  //       },
+  //       {
+  //         name: 'large',
+  //         type: {
+  //           name: 'Triangle',
+  //           ranges: [0, 10, 10],
+  //           value: fuzzyAreas.types.triangle.value,
+  //         },
+  //       },
+  //     ],
+  //   },
+  //   {
+  //     name: 'weight',
+  //     start: 0,
+  //     end: 100,
+  //     fuzzyAreasCount: 2,
+  //     example: 25,
+  //     fuzzyAreas: [
+  //       {
+  //         name: 'small',
+  //         type: {
+  //           name: 'Triangle',
+  //           ranges: [0, 0, 100],
+  //           value: fuzzyAreas.types.triangle.value,
+  //         },
+  //       },
+  //       {
+  //         name: 'large',
+  //         type: {
+  //           name: 'Triangle',
+  //           ranges: [0, 100, 100],
+  //           value: fuzzyAreas.types.triangle.value,
+  //         },
+  //       },
+  //     ],
+  //   },
+  // ],
+  // outputs: [
+  //   {
+  //     name: 'quality',
+  //     start: 0,
+  //     end: 100,
+  //     fuzzyAreasCount: 3,
+  //     fuzzyAreas: [
+  //       {
+  //         name: 'bad',
+  //         type: {
+  //           name: 'Triangle',
+  //           ranges: [0, 0, 50],
+  //           value: fuzzyAreas.types.triangle.value,
+  //         },
+  //       },
+  //       {
+  //         name: 'medium',
+  //         type: {
+  //           name: 'Triangle',
+  //           ranges: [0, 50, 100],
+  //           value: fuzzyAreas.types.triangle.value,
+  //         },
+  //       },
+  //       {
+  //         name: 'good',
+  //         type: {
+  //           name: 'Triangle',
+  //           ranges: [50, 50, 100],
+  //           value: fuzzyAreas.types.triangle.value,
+  //         },
+  //       },
+  //     ],
+  //   },
+  // ],
   // inputs: [
   //   {
   //     name: 'Temperature',
@@ -147,7 +248,7 @@ const exampleVariables = {
   //         name: 'Humid',
   //         type: {
   //           name: 'Triangle',
-  //           ranges: [40, 90, 100],
+  //           ranges: [20, 90, 100],
   //           value: fuzzyAreas.types.triangle.value,
   //         },
   //       },

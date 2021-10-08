@@ -1,8 +1,7 @@
-
 const variables = {
-  variableType: 'input',
+  variableType: "input",
   newVariable: {
-    name: '',
+    name: "",
     start: 0,
     end: 0,
     fuzzyAreasCount: 1,
@@ -11,20 +10,20 @@ const variables = {
   },
   inputs: [],
   outputs: [],
-  crisp: 'undefined',
+  crisp: "undefined",
 };
 
 const fuzzyAreas = {
   newFuzzyArea: {
-    name: 'Name',
+    name: "Name",
     type: {},
   },
   types: {
     triangle: {
-      name: 'Triangle',
+      name: "Triangle",
       ranges: [0, 0, 0],
       value: (rangesParam, valueParam) => {
-        const ranges = rangesParam.map(range => parseInt(range, 10));
+        const ranges = rangesParam.map((range) => parseInt(range, 10));
         const value = parseInt(valueParam, 10);
         // if (value < ranges[1]) {
         //   if (ranges[0] !== ranges[1]) {
@@ -36,18 +35,20 @@ const fuzzyAreas = {
         // }
         // return 0;
         if (value < ranges[0] || value > ranges[2]) return 0;
-        if (value < ranges[1]) return (value - ranges[0]) / (ranges[1] - ranges[0]);
+        if (value < ranges[1])
+          return (value - ranges[0]) / (ranges[1] - ranges[0]);
         return (ranges[2] - value) / (ranges[2] - ranges[1]);
       },
     },
     trapezoid: {
-      name: 'Trapezoid',
+      name: "Trapezoid",
       ranges: [0, 0, 0, 0],
       value: (rangesParam, valueParam) => {
-        const ranges = rangesParam.map(range => parseInt(range, 10));
+        const ranges = rangesParam.map((range) => parseInt(range, 10));
         const value = parseInt(valueParam, 10);
         if (value < ranges[0] || value > ranges[3]) return 0;
-        if (value < ranges[1]) return (value - ranges[0]) / (ranges[1] - ranges[0]);
+        if (value < ranges[1])
+          return (value - ranges[0]) / (ranges[1] - ranges[0]);
         else if (value < ranges[2]) return 1;
         return (ranges[3] - value) / (ranges[3] - ranges[2]);
       },
@@ -58,8 +59,8 @@ const fuzzyAreas = {
 const rules = {
   data: [],
   newRule: {
-    name: 'name',
-    type: 'AND',
+    name: "name",
+    type: "AND",
     fuzzyAreas: {
       inputs: [],
       output: {
@@ -76,9 +77,9 @@ const rules = {
 
 const exampleVariables = {
   ...variables,
-  variableType: 'input',
+  variableType: "input",
   newVariable: {
-    name: '',
+    name: "",
     start: 0,
     end: 0,
     fuzzyAreasCount: 1,
@@ -297,21 +298,22 @@ const exampleVariables = {
   //     ],
   //   },
   // ],
-
 };
 
 const config = {
-  projectName: 'My new project',
+  projectName: "My new project",
   variables: exampleVariables,
   fuzzyAreas,
   rules,
   chartData: {
     labels: [0, 30, 50],
-    datasets: [{
-      label: 'MF',
-      backgroundColor: '#f87979',
-      data: [1, 0.5, 0.2],
-    }],
+    datasets: [
+      {
+        label: "MF",
+        backgroundColor: "#f87979",
+        data: [1, 0.5, 0.2],
+      },
+    ],
   },
 };
 
